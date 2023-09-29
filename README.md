@@ -64,9 +64,11 @@ Any contributions you make are truly appreciated, go to our [CONTRIBUTING.md](ht
 
 View [CODE_OF_CONDUCT.md](https://github.com/lovishprabhakar/TicTacToe-Hacktoberfest/blob/main/CODE_OF_CONDUCT.md)
 
+If you liked this project, please leave a 🌟
 
 ## Thanks to all Contributors
 
 <a href="https://github.com/lovishprabhakar/TicTacToe-Hacktoberfest/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=lovishprabhakar/TicTacToe-Hacktoberfest" />
 </a>
+
