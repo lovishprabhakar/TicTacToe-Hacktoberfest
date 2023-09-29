@@ -23,7 +23,7 @@ Team working with a lot of folks is very good for the growth 📈 of the project
 - Welcoming tone or politeness 😇: It is expected that you interact with others in an optimistic and cheerful manner.
 
 
-# Things to take care of while making a PR:
+## Things to take care of while making a PR:
 
 - Don't forget to attach a screenshot of the final output of the work that you have done, and do mention the issue you have worked upon, while making a PR.
 - Just make sure that you push only the files that you have worked on.
@@ -39,7 +39,7 @@ Team working with a lot of folks is very good for the growth 📈 of the project
 <img src="./img/drawscreen.png" width="45%" />
 </p>
 
-# Your First Contribution
+## Your First Contribution
 Is this your first time contributing to an open-source project? If yes, Welcome!!✨🎉💃🏾 Here is a [great tutorial](https://app.egghead.io/playlists/how-to-contribute-to-an-open-source-project-on-github) on how to contribute to an open source project.
 
 At this point, you are ready to take on the world of open-source contribution!!.
@@ -50,7 +50,7 @@ At this point, you are ready to take on the world of open-source contribution!!.
 2. After the issue is accepted and the `hacktoberfest-accepted` label is added to it, you can start working on your local repository.
 3. Push your local changes to remote and create a Pull Request. That's all! Your changes will then be reviewed by the maintainer.
 
-For step by step explanation of how to push your local changes to remote, see our [CONTRIBUTING.md](https://github.com/lovishprabhakar/C-Simplify/blob/main/CONTRIBUTING.md) file.
+For step by step explanation of how to push your local changes to remote, see our [CONTRIBUTING.md](https://github.com/lovishprabhakar/TicTacToe-Hacktoberfest/blob/main/CONTRIBUTING.md) file.
 
 # Code review process
 
@@ -58,11 +58,11 @@ The maintainer of C-Simplify looks at Pull Requests on a regular basis and carri
 
 # Contributing Guidelines
 
-Any contributions you make are truly appreciated, go to our [CONTRIBUTING.md](https://github.com/lovishprabhakar/C-Simplify/blob/main/CONTRIBUTING.md) file for more information.
+Any contributions you make are truly appreciated, go to our [CONTRIBUTING.md](https://github.com/lovishprabhakar/TicTacToe-Hacktoberfest/blob/main/CONTRIBUTING.md) file for more information.
 
 ## Code of Conduct
 
-View [CODE_OF_CONDUCT.md](https://github.com/lovishprabhakar/C-Simplify/blob/main/CODE_OF_CONDUCT.md)
+View [CODE_OF_CONDUCT.md](https://github.com/lovishprabhakar/TicTacToe-Hacktoberfest/blob/main/CODE_OF_CONDUCT.md)
 
 
 ## Thanks to all Contributors
