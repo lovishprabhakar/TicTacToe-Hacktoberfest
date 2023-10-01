@@ -3,180 +3,122 @@ package com.lovishprabhakar.tictactoe;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
+import android.widget.GridLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 import com.lovishprabhakar.tictactoe.databinding.ActivityMainBinding;
-import java.util.ArrayList;
-import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
-    ActivityMainBinding binding;
-    private final List<int[]> combinationList = new ArrayList<>();
-    private int[] boxPositions = {0,0,0,0,0,0,0,0,0}; //9 zero
-    private int playerTurn = 1;
-    private int totalSelectedBoxes = 1;
+
+    private static final int PLAYER_X = 1;
+    private static final int PLAYER_O = 2;
+
+    private int currentPlayer = PLAYER_X;
+    private int[] gameState = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+    private int[][] winningPositions = {
+            {0, 1, 2}, {3, 4, 5}, {6, 7, 8}, // Rows
+            {0, 3, 6}, {1, 4, 7}, {2, 5, 8}, // Columns
+            {0, 4, 8}, {2, 4, 6} // Diagonals
+    };
+
+    private boolean gameActive = true;
+
+    private GridLayout gameGrid;
+    private TextView playerTurnText;
+    private Button resetButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
-        combinationList.add(new int[] {0,1,2});
-        combinationList.add(new int[] {3,4,5});
-        combinationList.add(new int[] {6,7,8});
-        combinationList.add(new int[] {0,3,6});
-        combinationList.add(new int[] {1,4,7});
-        combinationList.add(new int[] {2,5,8});
-        combinationList.add(new int[] {2,4,6});
-        combinationList.add(new int[] {0,4,8});
-        String getPlayerOneName = getIntent().getStringExtra("playerOne");
-        String getPlayerTwoName = getIntent().getStringExtra("playerTwo");
-        binding.playerOneName.setText(getPlayerOneName);
-        binding.playerTwoName.setText(getPlayerTwoName);
-        binding.image1.setOnClickListener(new View.OnClickListener() {
+        setContentView(R.layout.activity_main);
+
+        gameGrid = findViewById(R.id.gridLayout);
+        playerTurnText = findViewById(R.id.playerTurnText);
+        resetButton = findViewById(R.id.resetButton);
+
+        resetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (isBoxSelectable(0)){
-                    performAction((ImageView) view, 0);
-                }
+                resetGame();
             }
         });
-        binding.image2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (isBoxSelectable(1)){
-                    performAction((ImageView) view, 1);
-                }
-            }
-        });
-        binding.image3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (isBoxSelectable(2)){
-                    performAction((ImageView) view, 2);
-                }
-            }
-        });
-        binding.image4.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (isBoxSelectable(3)){
-                    performAction((ImageView) view, 3);
-                }
-            }
-        });
-        binding.image5.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (isBoxSelectable(4)){
-                    performAction((ImageView) view, 4);
-                }
-            }
-        });
-        binding.image6.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (isBoxSelectable(5)){
-                    performAction((ImageView) view, 5);
-                }
-            }
-        });
-        binding.image7.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (isBoxSelectable(6)){
-                    performAction((ImageView) view, 6);
-                }
-            }
-        });
-        binding.image8.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (isBoxSelectable(7)){
-                    performAction((ImageView) view, 7);
-                }
-            }
-        });
-        binding.image9.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (isBoxSelectable(8)){
-                    performAction((ImageView) view, 8);
-                }
-            }
-        });
+
+        initializeGrid();
     }
-    private void performAction(ImageView  imageView, int selectedBoxPosition) {
-        boxPositions[selectedBoxPosition] = playerTurn;
-        if (playerTurn == 1) {
-            imageView.setImageResource(R.drawable.ximage);
-            if (checkResults()) {
-                ResultDialog resultDialog = new ResultDialog(MainActivity.this, binding.playerOneName.getText().toString()
-                        + " is the Winner!", MainActivity.this);
-                resultDialog.setCancelable(false);
-                resultDialog.show();
-            } else if(totalSelectedBoxes == 9) {
-                ResultDialog resultDialog = new ResultDialog(MainActivity.this, "Match Drawn!", MainActivity.this);
-                resultDialog.setCancelable(false);
-                resultDialog.show();
+
+    private void initializeGrid() {
+        for (int i = 0; i < gameGrid.getChildCount(); i++) {
+            ImageView cell = (ImageView) gameGrid.getChildAt(i);
+            cell.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onCellClick((ImageView) view);
+                }
+            });
+        }
+    }
+
+    private void onCellClick(ImageView cell) {
+        int cellIndex = Integer.parseInt(cell.getTag().toString());
+        if (gameState[cellIndex] == 0 && gameActive) {
+            gameState[cellIndex] = currentPlayer;
+            cell.setTranslationY(-2000f);
+
+            if (currentPlayer == PLAYER_X) {
+                cell.setImageResource(R.drawable.ximage);
+                currentPlayer = PLAYER_O;
+                playerTurnText.setText(getString(R.string.player_turn, "Player O"));
             } else {
-                changePlayerTurn(2);
-                totalSelectedBoxes++;
+                cell.setImageResource(R.drawable.oimage);
+                currentPlayer = PLAYER_X;
+                playerTurnText.setText(getString(R.string.player_turn, "Player X"));
             }
-        } else {
-            imageView.setImageResource(R.drawable.oimage);
-            if (checkResults()) {
-                ResultDialog resultDialog = new ResultDialog(MainActivity.this, binding.playerTwoName.getText().toString()
-                        + " is the Winner!", MainActivity.this);
-                resultDialog.setCancelable(false);
-                resultDialog.show();
-            } else if(totalSelectedBoxes == 9) {
-                ResultDialog resultDialog = new ResultDialog(MainActivity.this, "Match Drawn!", MainActivity.this);
-                resultDialog.setCancelable(false);
-                resultDialog.show();
-            } else {
-                changePlayerTurn(1);
-                totalSelectedBoxes++;
+
+            cell.animate().translationYBy(2000f).setDuration(300);
+
+            if (checkForWin()) {
+                playerTurnText.setText(getString(R.string.player_wins, getCurrentPlayerName()));
+                gameActive = false;
+            } else if (isGameDraw()) {
+                playerTurnText.setText(R.string.game_draw);
+                gameActive = false;
             }
         }
     }
-    private void changePlayerTurn(int currentPlayerTurn) {
-        playerTurn = currentPlayerTurn;
-        if (playerTurn == 1) {
-            binding.playerOneLayout.setBackgroundResource(R.drawable.black_border);
-            binding.playerTwoLayout.setBackgroundResource(R.drawable.white_box);
-        } else {
-            binding.playerTwoLayout.setBackgroundResource(R.drawable.black_border);
-            binding.playerOneLayout.setBackgroundResource(R.drawable.white_box);
-        }
-    }
-    private boolean checkResults(){
-        boolean response = false;
-        for (int i = 0; i < combinationList.size(); i++){
-            final int[] combination = combinationList.get(i);
-            if (boxPositions[combination[0]] == playerTurn && boxPositions[combination[1]] == playerTurn &&
-                    boxPositions[combination[2]] == playerTurn) {
-                response = true;
+
+    private boolean checkForWin() {
+        for (int[] winningPosition : winningPositions) {
+            if (gameState[winningPosition[0]] == gameState[winningPosition[1]] &&
+                gameState[winningPosition[1]] == gameState[winningPosition[2]] &&
+                gameState[winningPosition[0]] != 0) {
+                return true;
             }
         }
-        return response;
+        return false;
     }
-    private boolean isBoxSelectable(int boxPosition) {
-        boolean response = false;
-        if (boxPositions[boxPosition] == 0) {
-            response = true;
+
+    private boolean isGameDraw() {
+        for (int state : gameState) {
+            if (state == 0) {
+                return false;
+            }
         }
-        return response;
+        return true;
     }
-    public void restartMatch(){
-        boxPositions = new int[] {0,0,0,0,0,0,0,0,0}; //9 zero
-        playerTurn = 1;
-        totalSelectedBoxes = 1;
-        binding.image1.setImageResource(R.drawable.white_box);
-        binding.image2.setImageResource(R.drawable.white_box);
-        binding.image3.setImageResource(R.drawable.white_box);
-        binding.image4.setImageResource(R.drawable.white_box);
-        binding.image5.setImageResource(R.drawable.white_box);
-        binding.image6.setImageResource(R.drawable.white_box);
-        binding.image7.setImageResource(R.drawable.white_box);
-        binding.image8.setImageResource(R.drawable.white_box);
-        binding.image9.setImageResource(R.drawable.white_box);
+
+    private void resetGame() {
+        for (int i = 0; i < gameState.length; i++) {
+            gameState[i] = 0;
+            ImageView cell = (ImageView) gameGrid.getChildAt(i);
+            cell.setImageResource(0);
+        }
+        currentPlayer = PLAYER_X;
+        gameActive = true;
+        playerTurnText.setText(getString(R.string.player_turn, "Player X"));
+    }
+
+    private String getCurrentPlayerName() {
+        return (currentPlayer == PLAYER_X) ? "Player X" : "Player O";
     }
 }
